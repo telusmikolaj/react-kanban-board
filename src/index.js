@@ -13,8 +13,8 @@ const App = () => {
 
   return (
     <ColumnsContext.Provider value={columns}>
-      <TasksContext.Provider>
-        <Board columns={columns} />
+      <TasksContext.Provider value={tasks}>
+        <Board />
       </TasksContext.Provider>
     </ColumnsContext.Provider>
   );
