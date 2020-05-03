@@ -1,6 +1,7 @@
 import React from "react";
 import TasksContext from "../TasksContext";
 import styled from "styled-components";
+import Task from "./Task";
 
 const Container = styled.div`
   margin: 8px;
@@ -18,7 +19,15 @@ const Column = (props) => {
     <Container>
       <Title>{props.column.title}</Title>
       <TasksContext.Consumer>
-        {(tasks) => tasks.map((task) => <div>{task.content}</div>)}
+        {(tasks) =>
+          tasks.map((task) => {
+            if (props.column.id === task.columnId) {
+              return (
+                <Task key={task.id} task={task} columnId={props.column.id} />
+              );
+            }
+          })
+        }
       </TasksContext.Consumer>
     </Container>
   );

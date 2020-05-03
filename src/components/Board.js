@@ -6,7 +6,7 @@ const Board = (props) => {
   return (
     <ColumnsContext.Consumer>
       {(columns) =>
-        columns.map((column) => <Column key={columns.id} column={column} />)
+        columns.map((column) => <Column key={column.id} column={column} />)
       }
     </ColumnsContext.Consumer>
   );
