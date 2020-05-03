@@ -23,10 +23,14 @@ const TaskList = styled.div`
   min-height: 100px;
 `;
 const Column = (props) => {
+  const isDropDisabled = props.column.taskLimit === props.column.activeTasks;
   return (
     <Container>
-      <Title>{props.column.title}</Title>
-      <Droppable droppableId={props.column.id}>
+      <Title>
+        {props.column.title}
+        {isDropDisabled && <span> Limit reached</span>}
+      </Title>
+      <Droppable droppableId={props.column.id} isDropDisabled={isDropDisabled}>
         {(provided, snapshot) => (
           <TaskList
             ref={provided.innerRef}
