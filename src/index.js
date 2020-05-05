@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import initialTasks from "./initialTasks";
 import initialColumns from "./initialColumns";
@@ -14,6 +14,24 @@ const Container = styled.div`
 const App = () => {
   const [tasks, setTasks] = useState(initialTasks);
   const [columns, setColumns] = useState(initialColumns);
+  const [columnsCopy, setColumnsCopy] = useState([]);
+  // useEffect(() => {
+  //   const currentTask = JSON.parse(localStorage.getItem("task"));
+  //   const currentColumns = JSON.parse(localStorage.getItem("columns"));
+  //   if (currentColumns != null || currentTask != null) {
+  //     setTasks(currentTask);
+  //     setColumns(currentColumns);
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   localStorage.setItem("task", JSON.stringify(tasks));
+  //   //console.log(tasks);
+  // }, [tasks]);
+  useEffect(() => {
+    //localStorage.setItem("columns", JSON.stringify(columns));
+    console.log(columns);
+  }, [columns]);
 
   const onDragStart = () => {
     document.body.style.color = "orange";
@@ -24,21 +42,36 @@ const App = () => {
     const opacity = destination
       ? destination.index / Object.keys(tasks).length
       : 0;
+  };
 
-    document.body.style.backgroundColor = `rgba(153,141,217,${opacity})`;
+  const addTask = (data) => {
+    const [lastItem] = [...tasks].slice(-1);
+    const lastItemId = parseInt(lastItem.id);
+    data.id = (lastItemId + 1).toString();
+    let tasksCopy = [...tasks];
+    tasksCopy.push(data);
+    changeActiveTasksNum(data.columnId, "+");
+    console.log(data.columnId);
+    setTasks(tasksCopy);
+  };
+
+  const getLastItemID = () => {
+    const [lastItem] = [...tasks].slice(-1);
+
+    return lastItem.id;
   };
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
-    if (!destination) {
-      return;
-    }
+    // if (!destination) {
+    //   return;
+    // }
 
-    if (
-      destination.droppableId === source.draggableId &&
-      destination.index === source.index
-    ) {
-      return;
-    }
+    // if (
+    //   destination.droppableId === source.draggableId &&
+    //   destination.index === source.index
+    // ) {
+    //   return;
+    // }
 
     const taskIndex = tasks.findIndex((task) => task.id === draggableId);
     let tasksCopy = [...tasks];
@@ -47,30 +80,28 @@ const App = () => {
       columnId: destination.droppableId,
     };
     setTasks(tasksCopy);
-    const startColumnIndex = columns.findIndex(
-      (column) => column.id === source.droppableId
-    );
-    const finishColumnIndex = columns.findIndex(
-      (column) => column.id === destination.droppableId
-    );
-    let columnsCopy = [...columns];
+    changeActiveTasksNum(source.droppableId, "-");
 
-    const activeTasksFinishColumn =
-      columnsCopy[finishColumnIndex].activeTasks + 1;
-    columnsCopy[finishColumnIndex] = {
-      ...columnsCopy[finishColumnIndex],
-      activeTasks: activeTasksFinishColumn,
-    };
-
-    const activeTasksStartColumn =
-      columnsCopy[startColumnIndex].activeTasks - 1;
-    columnsCopy[startColumnIndex] = {
-      ...columnsCopy[startColumnIndex],
-      activeTasks: activeTasksStartColumn,
-    };
-    setColumns(columnsCopy);
+    changeActiveTasksNum(destination.droppableId, "+");
   };
 
+  const changeActiveTasksNum = (columnId, operator) => {
+    let columnsCopy = [...columns];
+    const columnIndex = columns.findIndex((column) => column.id === columnId);
+    let updatedActiveTasks;
+    if (operator === "+") {
+      updatedActiveTasks = columnsCopy[columnIndex].activeTasks + 1;
+    } else {
+      updatedActiveTasks = columnsCopy[columnIndex].activeTasks - 1;
+    }
+
+    columnsCopy[columnIndex] = {
+      ...columnsCopy[columnIndex],
+      activeTasks: updatedActiveTasks,
+    };
+
+    setColumns(columnsCopy);
+  };
   return (
     <DragDropContext
       onDragStart={onDragStart}
@@ -80,7 +111,7 @@ const App = () => {
       <Container>
         <ColumnsContext.Provider value={columns}>
           <TasksContext.Provider value={tasks}>
-            <Board />
+            <Board addTask={addTask} />
           </TasksContext.Provider>
         </ColumnsContext.Provider>
       </Container>

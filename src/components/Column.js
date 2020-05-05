@@ -3,6 +3,7 @@ import TasksContext from "../TasksContext";
 import styled from "styled-components";
 import Task from "./Task";
 import { Droppable } from "react-beautiful-dnd";
+import Form from "./Form";
 
 const Container = styled.div`
   margin: 8px;
@@ -56,6 +57,10 @@ const Column = (props) => {
           </TaskList>
         )}
       </Droppable>
+
+      {!isDropDisabled && (
+        <Form columnId={props.column.id} addTask={props.addTask} />
+      )}
     </Container>
   );
 };
