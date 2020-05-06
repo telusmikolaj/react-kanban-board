@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import DeleteContext from "../DeleteContext";
+import EditContext from "../EditContext";
+import Form from "./Form";
+import EditModeContext from "../EditModeContext";
 
 const Container = styled.div`
   border: 1px solid lightgrey;
@@ -21,7 +24,20 @@ const Button = styled.button`
 `;
 
 const Task = (props) => {
-  return (
+  const [editMode, setEditMode] = useState(false);
+
+  return editMode ? (
+    <EditContext.Consumer>
+      {(editTask) => (
+        <Form
+          mode={true}
+          content={props.task.content}
+          taskId={props.task.id}
+          editTask={editTask}
+        />
+      )}
+    </EditContext.Consumer>
+  ) : (
     <Draggable draggableId={props.task.id} index={props.index}>
       {(provided, snapshot) => (
         <Container
@@ -30,8 +46,10 @@ const Task = (props) => {
           isDragging={snapshot.isDragging}
           {...provided.dragHandleProps}
         >
-          <div>{props.task.content}</div>
-          <Button edit>Edit</Button>
+          {props.task.content}
+          <Button onClick={() => setEditMode(true)} edit>
+            Edit
+          </Button>
           <DeleteContext.Consumer>
             {(deleteTask) => (
               <Button onClick={() => deleteTask(props.task.id)}>Delete</Button>

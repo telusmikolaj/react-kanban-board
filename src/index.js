@@ -6,6 +6,7 @@ import Board from "./components/Board";
 import ColumnsContext from "./ColumnsContext";
 import TasksContext from "./TasksContext";
 import DeleteContext from "./DeleteContext";
+import EditContext from "./EditContext";
 
 import styled from "styled-components";
 import { DragDropContext } from "react-beautiful-dnd";
@@ -17,6 +18,7 @@ const Container = styled.div`
 const App = () => {
   const [tasks, setTasks] = useState(initialTasks);
   const [columns, setColumns] = useState(initialColumns);
+  const [editMode, setEditMode] = useState(false);
   // useEffect(() => {
   //   const currentTask = JSON.parse(localStorage.getItem("task"));
   //   const currentColumns = JSON.parse(localStorage.getItem("columns"));
@@ -26,10 +28,9 @@ const App = () => {
   //   }
   // }, []);
 
-  // useEffect(() => {
-  //   localStorage.setItem("task", JSON.stringify(tasks));
-  //   //console.log(tasks);
-  // }, [tasks]);
+  useEffect(() => {
+    return;
+  }, [tasks]);
   useEffect(() => {
     //localStorage.setItem("columns", JSON.stringify(columns));
     console.log(columns);
@@ -51,6 +52,14 @@ const App = () => {
     const updatedTasks = tasks.filter((task) => task.id !== taskId);
     setTasks(updatedTasks);
     changeActiveTasksNum(clearedTask.columnId, "-");
+  };
+
+  const editTask = (taskId, content) => {
+    let tasksCopy = [...tasks];
+    const taskIndex = tasksCopy.findIndex((task) => task.id === taskId);
+    console.log(taskIndex);
+    tasksCopy[taskIndex].content = content;
+    setTasks(tasksCopy);
   };
   const addTask = (data) => {
     const [lastItem] = [...tasks].slice(-1);
@@ -119,7 +128,9 @@ const App = () => {
         <ColumnsContext.Provider value={columns}>
           <TasksContext.Provider value={tasks}>
             <DeleteContext.Provider value={deleteTask}>
-              <Board addTask={addTask} />
+              <EditContext.Provider value={editTask}>
+                <Board addTask={addTask} />
+              </EditContext.Provider>
             </DeleteContext.Provider>
           </TasksContext.Provider>
         </ColumnsContext.Provider>
