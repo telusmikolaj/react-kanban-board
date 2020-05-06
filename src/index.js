@@ -62,27 +62,26 @@ const App = () => {
   };
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
-    // if (!destination) {
-    //   return;
-    // }
 
-    // if (
-    //   destination.droppableId === source.draggableId &&
-    //   destination.index === source.index
-    // ) {
-    //   return;
-    // }
+    if (!destination) {
+      return;
+    }
 
-    const taskIndex = tasks.findIndex((task) => task.id === draggableId);
-    let tasksCopy = [...tasks];
-    tasksCopy[taskIndex] = {
-      ...tasksCopy[taskIndex],
-      columnId: destination.droppableId,
-    };
-    setTasks(tasksCopy);
+    moveTask(draggableId, destination.droppableId);
     changeActiveTasksNum(source.droppableId, "-");
 
     changeActiveTasksNum(destination.droppableId, "+");
+  };
+
+  const moveTask = (taskId, columnId) => {
+    const taskIndex = tasks.findIndex((task) => task.id === taskId);
+    let tasksCopy = [...tasks];
+
+    tasksCopy[taskIndex] = {
+      ...tasksCopy[taskIndex],
+      columnId: columnId,
+    };
+    setTasks(tasksCopy);
   };
 
   const changeActiveTasksNum = (columnId, operator) => {
