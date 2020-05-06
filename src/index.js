@@ -5,16 +5,18 @@ import initialColumns from "./initialColumns";
 import Board from "./components/Board";
 import ColumnsContext from "./ColumnsContext";
 import TasksContext from "./TasksContext";
+import DeleteContext from "./DeleteContext";
+
 import styled from "styled-components";
 import { DragDropContext } from "react-beautiful-dnd";
 
 const Container = styled.div`
   display: felx;
 `;
+
 const App = () => {
   const [tasks, setTasks] = useState(initialTasks);
   const [columns, setColumns] = useState(initialColumns);
-  const [columnsCopy, setColumnsCopy] = useState([]);
   // useEffect(() => {
   //   const currentTask = JSON.parse(localStorage.getItem("task"));
   //   const currentColumns = JSON.parse(localStorage.getItem("columns"));
@@ -44,6 +46,12 @@ const App = () => {
       : 0;
   };
 
+  const deleteTask = (taskId) => {
+    const [clearedTask] = tasks.filter((task) => task.id === taskId);
+    const updatedTasks = tasks.filter((task) => task.id !== taskId);
+    setTasks(updatedTasks);
+    changeActiveTasksNum(clearedTask.columnId, "-");
+  };
   const addTask = (data) => {
     const [lastItem] = [...tasks].slice(-1);
     const lastItemId = parseInt(lastItem.id);
@@ -110,7 +118,9 @@ const App = () => {
       <Container>
         <ColumnsContext.Provider value={columns}>
           <TasksContext.Provider value={tasks}>
-            <Board addTask={addTask} />
+            <DeleteContext.Provider value={deleteTask}>
+              <Board addTask={addTask} />
+            </DeleteContext.Provider>
           </TasksContext.Provider>
         </ColumnsContext.Provider>
       </Container>

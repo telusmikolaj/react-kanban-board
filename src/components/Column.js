@@ -23,6 +23,18 @@ const TaskList = styled.div`
   flex-gorw: 1;
   min-height: 100px;
 `;
+
+const Button = styled.button`
+  display: inline-block;
+  width: 19px;
+  height: 18px;
+  text-align: center;
+  background-color: #d2d2d2;
+  border-radius: 50%;
+  font-size: 12px;
+  line-height: 18px;
+  cursor: pointer;
+`;
 const Column = (props) => {
   const isDropDisabled = props.column.taskLimit === props.column.activeTasks;
   return (
