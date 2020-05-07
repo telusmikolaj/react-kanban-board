@@ -20,6 +20,9 @@ const App = () => {
   const [tasks, setTasks] = useLocalStorage("tasks", initialTasks);
   const [columns, setColumns] = useLocalStorage("columns", initialColumns);
 
+  useEffect(() => {
+    console.log(columns);
+  }, [columns]);
   const onDragStart = () => {
     document.body.style.color = "orange";
     document.body.style.transition = "background-color 0.2s ease";
@@ -56,22 +59,13 @@ const App = () => {
     setTasks(tasksCopy);
   };
 
-  const getLastItemID = () => {
-    const [lastItem] = [...tasks].slice(-1);
-
-    return lastItem.id;
-  };
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
-
     if (!destination) {
       return;
     }
-
     moveTask(draggableId, destination.droppableId);
-    changeActiveTasksNum(source.droppableId, "-");
-
-    changeActiveTasksNum(destination.droppableId, "+");
+    changeActiveTasksNum(destination.droppableId, source.droppableId);
   };
 
   const moveTask = (taskId, columnId) => {
@@ -85,19 +79,28 @@ const App = () => {
     setTasks(tasksCopy);
   };
 
-  const changeActiveTasksNum = (columnId, operator) => {
+  const changeActiveTasksNum = (endColumnId, startColumnId) => {
+    console.log(endColumnId);
+    console.log(startColumnId);
     let columnsCopy = [...columns];
-    const columnIndex = columns.findIndex((column) => column.id === columnId);
-    let updatedActiveTasks;
-    if (operator === "+") {
-      updatedActiveTasks = columnsCopy[columnIndex].activeTasks + 1;
-    } else {
-      updatedActiveTasks = columnsCopy[columnIndex].activeTasks - 1;
-    }
 
-    columnsCopy[columnIndex] = {
-      ...columnsCopy[columnIndex],
-      activeTasks: updatedActiveTasks,
+    const startColumnIndex = columns.findIndex(
+      (column) => column.id === startColumnId
+    );
+    console.log(startColumnIndex);
+    const endColumnIndex = columns.findIndex(
+      (column) => column.id === endColumnId
+    );
+
+    const startActiveTasks = columnsCopy[startColumnIndex].activeTasks - 1;
+    columnsCopy[startColumnIndex] = {
+      ...columnsCopy[startColumnIndex],
+      activeTasks: startActiveTasks,
+    };
+    const endActiveTasks = columnsCopy[endColumnIndex].activeTasks + 1;
+    columnsCopy[endColumnIndex] = {
+      ...columnsCopy[endColumnIndex],
+      activeTasks: endActiveTasks,
     };
 
     setColumns(columnsCopy);
