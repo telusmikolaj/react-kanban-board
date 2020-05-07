@@ -29,7 +29,7 @@ const App = () => {
   // }, []);
 
   useEffect(() => {
-    return;
+    console.log(tasks);
   }, [tasks]);
   useEffect(() => {
     //localStorage.setItem("columns", JSON.stringify(columns));

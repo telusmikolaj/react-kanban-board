@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useInput } from "../hooks/input-hook";
 
 const Button = styled.button`
   background: ${(props) => (props.edit ? "palevioletred" : "#FF5733")};
@@ -11,34 +12,30 @@ const Button = styled.button`
   border-radius: 3px;
 `;
 const Form = (props) => {
-  const [content, setContent] = useState("");
+  const { value, bind, reset } = useInput("");
 
   const createNewTask = (event) => {
     event.preventDefault();
     const newTask = {
       id: "",
-      content,
+      content: value,
       columnId: props.columnId,
     };
     props.addTask(newTask);
+    reset();
   };
 
   const updateTask = (event) => {
     event.preventDefault();
-    props.editTask(props.taskId, content);
+    props.editTask(props.taskId, value);
+    reset();
   };
 
   return (
     <div>
       <form>
         <label htmlFor="Task"></label>
-        <input
-          type="text"
-          name="task"
-          placeholder={props.content}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
+        <input type="text" placeholder={props.content} {...bind} />
         {props.mode ? (
           <Button type="submit" onClick={updateTask}>
             Update
