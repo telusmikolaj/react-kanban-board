@@ -10,31 +10,15 @@ import EditContext from "./EditContext";
 
 import styled from "styled-components";
 import { DragDropContext } from "react-beautiful-dnd";
+import { useLocalStorage } from "./hooks/localstorage-hook";
 
 const Container = styled.div`
   display: felx;
 `;
 
 const App = () => {
-  const [tasks, setTasks] = useState(initialTasks);
-  const [columns, setColumns] = useState(initialColumns);
-  const [editMode, setEditMode] = useState(false);
-  // useEffect(() => {
-  //   const currentTask = JSON.parse(localStorage.getItem("task"));
-  //   const currentColumns = JSON.parse(localStorage.getItem("columns"));
-  //   if (currentColumns != null || currentTask != null) {
-  //     setTasks(currentTask);
-  //     setColumns(currentColumns);
-  //   }
-  // }, []);
-
-  useEffect(() => {
-    console.log(tasks);
-  }, [tasks]);
-  useEffect(() => {
-    //localStorage.setItem("columns", JSON.stringify(columns));
-    console.log(columns);
-  }, [columns]);
+  const [tasks, setTasks] = useLocalStorage("tasks", initialTasks);
+  const [columns, setColumns] = useLocalStorage("columns", initialColumns);
 
   const onDragStart = () => {
     document.body.style.color = "orange";

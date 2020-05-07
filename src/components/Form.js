@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useInput } from "../hooks/input-hook";
+import Task from "./Task";
 
 const Button = styled.button`
   background: ${(props) => (props.edit ? "palevioletred" : "#FF5733")};
@@ -26,9 +27,7 @@ const Form = (props) => {
   };
 
   const updateTask = (event) => {
-    event.preventDefault();
     props.editTask(props.taskId, value);
-    reset();
   };
 
   return (

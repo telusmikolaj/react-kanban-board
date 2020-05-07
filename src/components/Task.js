@@ -4,7 +4,6 @@ import { Draggable } from "react-beautiful-dnd";
 import DeleteContext from "../DeleteContext";
 import EditContext from "../EditContext";
 import Form from "./Form";
-import EditModeContext from "../EditModeContext";
 
 const Container = styled.div`
   border: 1px solid lightgrey;
